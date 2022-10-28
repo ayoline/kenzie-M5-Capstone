@@ -17,6 +17,12 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
+### Abra o arquivo .env.example e crie um arquivo .env baseado nele
+```
+# mkdir .env
+```
+### Crie e teste a conexão de um database Postgres
+
 ### Execute as migrações
 ```
 ./manage.py migrate
