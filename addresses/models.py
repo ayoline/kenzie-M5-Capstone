@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Address(models.Model):
-    id = models.IntegerField()
     street = models.CharField(max_length=255)
     number = models.IntegerField()
     cep = models.CharField(max_length=8)
