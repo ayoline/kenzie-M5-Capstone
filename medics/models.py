@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Medic(models.Model):
-    crm = models.CharField(unique=True)
+    crm = models.CharField(max_length=50, unique=True)
 
     address = models.ForeignKey(
         "addresses.Address",
