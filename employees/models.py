@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class employee(models.Model):
+class Employee(models.Model):
     cpf = models.CharField(max_length=14, unique=True)
 
     address = models.ForeignKey(
