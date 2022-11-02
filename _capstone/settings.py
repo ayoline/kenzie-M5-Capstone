@@ -31,6 +31,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+
 
 # Application definition
 
@@ -106,16 +108,24 @@ if os.getenv("GITHUB_WORKFLOW"):
     }
     SECRET_KEY = "sua secret_key"  # não esqueça de alterar
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB"),
-            "USER": os.getenv("POSTGRES_USER"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": "127.0.0.1",
-            "PORT": 5432,
+    if DEVELOPMENT_MODE is True:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+            }
         }
-    }
+    else:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": os.getenv("POSTGRES_DB"),
+                "USER": os.getenv("POSTGRES_USER"),
+                "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+                "HOST": "127.0.0.1",
+                "PORT": 5432,
+            }
+        }
 
 
 # Password validation
