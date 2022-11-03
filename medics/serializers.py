@@ -100,10 +100,11 @@ class MedicSerializer(serializers.ModelSerializer):
             
         instance.user.save()
 
-        for key, value in address_data.items():
-            setattr(instance.address, key, value)
+        if address_data is not None:
+            for key, value in address_data.items():
+                setattr(instance.address, key, value)
             
-        instance.address.save()
+            instance.address.save()
 
         if category_data is not None:
             category = get_object_or_404(Category, color=category_data)
