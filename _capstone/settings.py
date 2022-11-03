@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 import dotenv
+import django_on_heroku
 
 dotenv.load_dotenv()
 
@@ -31,6 +32,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+
 
 # Application definition
 
@@ -45,9 +48,19 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "drf_spectacular",
 ]
 
-MY_APPS = []
+MY_APPS = [
+    "addresses",
+    "categories",
+    "charts",
+    "accounts",
+    "specialties",
+    "patients",
+    "employees",
+    "medics",
+]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
 
@@ -96,18 +109,29 @@ if os.getenv("GITHUB_WORKFLOW"):
             "PORT": "5432",
         }
     }
-    SECRET_KEY = "sua secret_key"  # não esqueça de alterar
+    SECRET_KEY = os.getenv("SECRET_KEY")
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB"),
-            "USER": os.getenv("POSTGRES_USER"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": "127.0.0.1",
-            "PORT": 5432,
+    if DEVELOPMENT_MODE is True:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+            }
         }
-    }
+    else:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": os.getenv("POSTGRES_DB"),
+                "USER": os.getenv("POSTGRES_USER"),
+                "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+                "HOST": "127.0.0.1",
+                "PORT": 5432,
+            }
+        }
+
+
+AUTH_USER_MODEL = "accounts.Account"
 
 
 # Password validation
@@ -151,7 +175,17 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTH_USER_MODEL = "accounts.Account"
+
 REST_FRAMEWORK = {
-    # YOUR SETTINGS
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Capstone M5 API",
+    "DESCRIPTION": "Projeto API Django, relativo ao M5-S7-Capstone da Kenzie",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+
+django_on_heroku.settings(locals())

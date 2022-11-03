@@ -1,0 +1,150 @@
+@hostname = http://localhost:8000/
+@token = ""
+@id = ""
+
+== Category ==
+GET {{hostname}}api/category/ HTTP/1.1
+###
+POST {{hostname}}api/category/ HTTP/1.1
+content-type: application/json
+{
+    "color": "blue", 
+    "description": "Atendimento da manhã"
+}
+###
+PATCH {{hostname}}api/category/{{id}}/ HTTP/1.1
+###
+DELETE {{hostname}}api/category/{{id}}/ HTTP/1.1
+###
+
+== Specialty ==
+GET {{hostname}}api/specialty/ HTTP/1.1
+###
+POST {{hostname}}api/specialty/ HTTP/1.1
+content-type: application/json
+{
+    "name": "clinico geral"
+}
+###
+PATCH {{hostname}}api/specialty/{{id}}/ HTTP/1.1
+###
+DELETE {{hostname}}api/specialty/{{id}}/ HTTP/1.1
+
+== Patient ==
+GET {{hostname}}api/patient/ HTTP/1.1
+###
+POST {{hostname}}api/patient/ HTTP/1.1
+content-type: application/json
+{
+    "first_name": "ander",
+    "last_name": "son",
+    "cpf": 1232133434,
+    "address": {
+        "street": "rua teste",
+        "number": 1234,
+        "cep": "3232323",
+        "state": "SP",
+        "district": "bairro teste"
+    },
+    "category": {
+        "color": "vermelho",
+        "description": "teste"
+    },
+    "chart": {
+        "is_pregnant": false,
+        "is_diabetic": false,
+        "is_smoker": false,
+        "is_allergic": false,
+        "heart_disease": false,
+        "dificulty_healing": false,
+        "use_medication": false,
+        "other_information": "teste"
+    }
+}
+###
+PATCH {{hostname}}api/patient/{{id}} HTTP/1.1
+###
+DELETE {{hostname}}api/patient/{{id}} HTTP/1.1
+###
+GET {{hostname}}api/patient/{{id}}/chart/ HTTP/1.1
+
+== Medic ==
+GET {{hostname}}api/medic/ HTTP/1.1
+###
+POST {{hostname}}api/medic/ HTTP/1.1
+content-type: application/json
+{
+    "first_name": "fulano", 
+    "last_name": "de tal",
+    "phone_number": "12345565565",
+    "is_medic": true,
+    "crm": 12312312312,
+    "address":{
+      "street": "rua das magueiras",
+      "number": 12345,
+      "cep": "123456568",
+      "state": "SP",
+      "district": "bairro lalala",
+    },
+    "category": {
+      "color": "blue",
+    },
+    "specilty": {
+      "name": "odontologia",
+    },
+    "username": "maria",
+    "password": "sdada11231",
+} 
+###
+PATCH {{hostname}}api/medic/{{id}} HTTP/1.1
+###
+DELETE {{hostname}}api/medic/{{id}} HTTP/1.1
+###
+
+== Employee ==
+GET {{hostname}}api/employee/ HTTP/1.1
+###
+POST {{hostname}}api/employee/ HTTP/1.1
+{
+    "first_name": "fulano", 
+    "last_name": "de tal",
+    "phone_number": "12345565565",
+    "is_medic": false,
+    "cpf": 12312312312,
+    "address":{
+      "street": "rua das magueiras",
+      "number": 12345,
+      "cep": "123456568",
+      "state": "SP",
+      "district": "bairro lalala",
+    },
+    "username": "pedro",
+    "password": "sdada11231",
+} 
+###
+PATCH {{hostname}}api/employee/{{id}} HTTP/1.1
+###
+DELETE {{hostname}}api/employee/{{id}} HTTP/1.1
+###
+
+== Schedule ==
+GET {{hostname}}api/patient/{{id}}/schedule/ HTTP/1.1
+###
+GET {{hostname}}api/patient/{{id}}/schedule/{{id}}/ HTTP/1.1
+###
+GET {{hostname}}api/medic/{{id}}/schedule/ HTTP/1.1
+###
+POST {{hostname}}api/patient/{{id}}/schedule/ HTTP/1.1
+{
+  "description": "paciente precisa de atenção pq tem convulsões",
+  "start_at": "2022-11-01 10:00:00",
+  "completed": false,
+  "step": 1,
+  "medic_id": 123,
+} 
+###
+PATCH {{hostname}}api/patient/{{id}}/schedule/{{id}}/ HTTP/1.1
+###
+DELETE {{hostname}}api/patient/{{id}}/schedule/{{id}}/cancel HTTP/1.1
+###
+
