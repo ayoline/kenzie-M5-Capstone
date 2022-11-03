@@ -10,6 +10,7 @@ dj-database-url==1.0.0
 Django==4.1.2
 django-environ==0.9.0
 django-filter==22.1
+django-on-heroku==1.1.2
 djangorestframework==3.14.0
 drf-spectacular==0.24.2
 executing==1.1.1
@@ -44,3 +45,4 @@ tomli==2.0.1
 traitlets==5.4.0
 uritemplate==4.1.1
 wcwidth==0.2.5
+whitenoise==6.2.0
