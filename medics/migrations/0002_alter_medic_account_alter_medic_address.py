@@ -8,8 +8,8 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("addresses", "0002_alter_address_district_alter_address_state"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ("addresses", "0002_alter_address_district_alter_address_state"),
         ("medics", "0001_initial"),
     ]
 
