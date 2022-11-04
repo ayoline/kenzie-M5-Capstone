@@ -36,23 +36,31 @@ GET {{hostname}}api/patient/ HTTP/1.1
 POST {{hostname}}api/patient/ HTTP/1.1
 content-type: application/json
 {
-    "first_name": "fulano", 
-    "last_name": "de tal",
-    "cpf": 12312312312,
-    "address":{
-      "street": "rua das magueiras",
-      "number": 12345,
-      "cep": "123456568",
-      "state": "SP",
-      "district": "bairro lalala",
+    "first_name": "ander",
+    "last_name": "son",
+    "cpf": 1232133434,
+    "address": {
+        "street": "rua teste",
+        "number": 1234,
+        "cep": "3232323",
+        "state": "SP",
+        "district": "bairro teste"
     },
     "category": {
-      "color": "blue",
+        "color": "vermelho",
+        "description": "teste"
     },
     "chart": {
-      "...": "...",
+        "is_pregnant": false,
+        "is_diabetic": false,
+        "is_smoker": false,
+        "is_allergic": false,
+        "heart_disease": false,
+        "dificulty_healing": false,
+        "use_medication": false,
+        "other_information": "teste"
     }
-} 
+}
 ###
 PATCH {{hostname}}api/patient/{{id}} HTTP/1.1
 ###
@@ -78,12 +86,8 @@ content-type: application/json
       "state": "SP",
       "district": "bairro lalala",
     },
-    "category": {
-      "color": "blue",
-    },
-    "specilty": {
-      "name": "odontologia",
-    },
+    "category": "blue",
+    "specilty": "odontologia",
     "username": "maria",
     "password": "sdada11231",
 } 

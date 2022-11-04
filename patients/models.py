@@ -6,7 +6,7 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=50)
     cpf = models.CharField(max_length=14, unique=True)
 
-    address = models.ForeignKey(
+    address = models.OneToOneField(
         "addresses.Address",
         on_delete=models.CASCADE,
         related_name="patients",
@@ -18,7 +18,7 @@ class Patient(models.Model):
         related_name="patients",
     )
 
-    chart = models.ForeignKey(
+    chart = models.OneToOneField(
         "charts.Chart",
         on_delete=models.CASCADE,
         related_name="patients",
