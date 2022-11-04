@@ -12,4 +12,5 @@ class AddressSerializer(serializers.ModelSerializer):
             "cep",
             "state",
             "district",
+            "city",
         ]

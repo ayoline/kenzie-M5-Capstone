@@ -6,4 +6,5 @@ class Address(models.Model):
     number = models.IntegerField()
     cep = models.CharField(max_length=8)
     state = models.CharField(max_length=255)
-    district = models.CharField(max_length=2)
+    district = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
