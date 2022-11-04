@@ -1,6 +1,5 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.generics import ListCreateAPIView, DestroyAPIView
-from rest_framework.generics import UpdateAPIView
 from .models import Schedule
 from .serializers import ScheduleSerializer, SchedulePatchSerializer
 
@@ -18,14 +17,14 @@ class SchedulesPatientView(ListCreateAPIView):
         serializer.save(patient_id=patient_id)
 
 
-class SchedulesRetrievePatientView(RetrieveAPIView):
+class SchedulesDetailsPatientView(RetrieveUpdateAPIView):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
-
-class SchedulesUpdatePatientView(UpdateAPIView):
-    queryset = Schedule.objects.all()
-    serializer_class = SchedulePatchSerializer
+    serializer_map = {
+        'GET': ScheduleSerializer,
+        'PATCH': SchedulePatchSerializer,
+    }
 
 
 class SchedulesMedicView(ListAPIView):

@@ -1,116 +1,125 @@
-from rest_framework import serializers
 from .models import Medic
 from addresses.serializers import AddressSerializer
 from categories.serializers import CategorySerializer
 from specialties.serializers import SpecialtySerializer
-from accounts.serializers import AccountSerializer
 from accounts.models import Account
 from addresses.models import Address
 from categories.models import Category
 from specialties.models import Specialty
+from rest_framework import serializers
 from django.shortcuts import get_object_or_404
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "username",
+            "password",
+            "is_superuser",
+            "is_active",
+        ]
+        extra_kwargs = {"password": {"write_only": True}}
+
+        read_only_fields = [
+            "is_superuser",
+            "is_active",
+        ]
 
 
 class MedicSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
-    category = CategorySerializer()
-    specialty = SpecialtySerializer()
+    category = CategorySerializer(read_only=True)
+    specialty = SpecialtySerializer(read_only=True)
     account = AccountSerializer()
+
+    category_id = serializers.IntegerField(write_only=True)
+
+    specialty_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Medic
-        fields = ["id", "crm", "address", "category", "specialty", "account"]
+        fields = [
+            "id",
+            "crm",
+            "address",
+            "category",
+            "specialty",
+            "account",
+            "category_id",
+            "specialty_id",
+        ]
 
     def create(self, validated_data):
         body = {**validated_data}
-        first_name = body.pop("first_name")
-        last_name = body.pop("last_name")
-        phone_number = body.pop("phone_number")
-        username = body.pop("username")
-        password = body.pop("password")
+       
+        account_data = body.pop("account")
 
         crm = body.pop("crm")
 
         address_data = body.pop("address") 
 
-        category_data = body.pop("category")
+        category_data = body.pop("category_id")
 
-        specilty_data = body.pop("specilty")
+        specialty_data = body.pop("specialty_id")
 
-        category = get_object_or_404(Category, color=category_data)
+        category = get_object_or_404(Category, pk=category_data)
 
-        specilty = get_object_or_404(Specialty, name=specilty_data)
+        specialty = get_object_or_404(Specialty, pk=specialty_data)
 
-        account = Account.objects.create_user({
-            "first_name": first_name,
-            "last_name": last_name,
-            "phone_number": phone_number,
-            "username": username,
-            "password": password,
-            "is_medic": True
-        })
+        account = Account.objects.create_user(
+            **account_data, 
+            is_medic=True
+        )
 
-        address = Address.objects.create({**address_data})
+        address = Address.objects.create(**address_data)
+
+        medic_data = {"crm": crm}
 
         medic = Medic.objects.create(
-            {"crm": crm}, 
-            address=address,
+            **medic_data, 
+            account=account,
             category=category,
-            specialty=specilty,
-            account=account
+            specialty=specialty,
+            address=address
         )
 
         return medic
-        
+
     def update(self, instance, validated_data):
         body = {**validated_data}
-        first_name = body.pop("first_name", None)
-        last_name = body.pop("last_name", None)
-        phone_number = body.pop("phone_number", None)
-        username = body.pop("username", None)
-        password = body.pop("password", None)
+        account_data = body.pop("account", None)
 
         crm = body.pop("crm", None)
 
-        address_data = body.pop("address", None) 
+        address_data = body.pop("address", None)
 
-        category_data = body.pop("category", None)
+        category_data = body.pop("category_id", None)
 
         specilty_data = body.pop("specilty", None)
 
-        data_account = {}
+        if account_data is not None:
+            for key, value in account_data.items():
+                setattr(instance.account, key, value)
 
-        if first_name is not None:
-            data_account = {**data_account, "first_name": first_name}
+        instance.account.save()
 
-        if last_name is not None:
-            data_account = {**data_account, "last_name": last_name}
+        if address_data is not None:
+            for key, value in address_data.items():
+                setattr(instance.address, key, value)
 
-        if phone_number is not None:
-            data_account = {**data_account, "phone_number": phone_number}
-
-        if username is not None:
-            data_account = {**data_account, "username": username}
-
-        if password is not None:
-            data_account = {**data_account, "password": password}
-
-        for key, value in data_account.items():
-            setattr(instance.user, key, value)
-            
-        instance.user.save()
-
-        for key, value in address_data.items():
-            setattr(instance.address, key, value)
-            
-        instance.address.save()
+            instance.address.save()
 
         if category_data is not None:
-            category = get_object_or_404(Category, color=category_data)
+            category = get_object_or_404(Category, pk=category_data)
             instance.category = category
 
         if specilty_data is not None:
-            specilty = get_object_or_404(Specialty, name=specilty_data)
+            specilty = get_object_or_404(Specialty, pk=specilty_data)
             instance.specilty = specilty
 
         if crm is not None:

@@ -7,8 +7,8 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("charts", "0001_initial"),
         ("addresses", "0002_alter_address_district_alter_address_state"),
+        ("charts", "0001_initial"),
         ("patients", "0001_initial"),
     ]
 
