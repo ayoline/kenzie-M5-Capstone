@@ -86,12 +86,8 @@ content-type: application/json
       "state": "SP",
       "district": "bairro lalala",
     },
-    "category": {
-      "color": "blue",
-    },
-    "specilty": {
-      "name": "odontologia",
-    },
+    "category": "blue",
+    "specilty": "odontologia",
     "username": "maria",
     "password": "sdada11231",
 } 

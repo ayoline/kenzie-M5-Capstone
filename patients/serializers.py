@@ -12,8 +12,10 @@ from django.shortcuts import get_object_or_404
 
 class PatientSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
-    category = CategorySerializer()
+    category = CategorySerializer(read_only=True)
     chart = ChartSerializer()
+
+    category_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = Patient
@@ -25,15 +27,13 @@ class PatientSerializer(serializers.ModelSerializer):
             "address",
             "category",
             "chart",
+            "category_id",
         ]
 
     def create(self, validated_data):
         body = {**validated_data}
         first_name = body.pop("first_name")
         last_name = body.pop("last_name")
-        phone_number = body.pop("phone_number")
-        username = body.pop("username")
-        password = body.pop("password")
 
         cpf = body.pop("cpf")
 
@@ -41,32 +41,67 @@ class PatientSerializer(serializers.ModelSerializer):
 
         chart_data = body.pop("chart") 
 
-        category_data = body.pop("category")
+        category_data = body.pop("category_id")
 
-        category = get_object_or_404(Category, color=category_data)
+        category = get_object_or_404(Category, pk=category_data)
 
-        account = Account.objects.create_user({
+        address = Address.objects.create(**address_data)
+
+        chart = Chart.objects.create(**chart_data)
+
+        pacient_data = {
+            "cpf": cpf,
             "first_name": first_name,
-            "last_name": last_name,
-            "phone_number": phone_number,
-            "username": username,
-            "password": password,
-            "is_medic": False
-        })
-
-        address = Address.objects.create({**address_data})
-
-        chart = Chart.objects.create({**chart_data})
+            "last_name": last_name
+        }
 
         patient = Patient.objects.create(
-            {"cpf": cpf}, 
+            **pacient_data, 
             address=address,
             category=category,
             chart=chart,
-            account=account
         )
 
         return patient
 
     def update(self, instance, validated_data):
-        ...
+        body = {**validated_data}
+        first_name = body.pop("first_name", None)
+        last_name = body.pop("last_name", None)
+
+        cpf = body.pop("cpf", None)
+
+        address_data = body.pop("address", None) 
+
+        chart_data = body.pop("chart", None) 
+
+        category_data = body.pop("category_id", None)
+
+        if address_data is not None:
+            for key, value in address_data.items():
+                setattr(instance.address, key, value)
+            
+            instance.address.save()
+
+        if chart_data is not None:
+            for key, value in chart_data.items():
+                setattr(instance.chart, key, value)
+            
+            instance.chart.save()
+
+        if category_data is not None:
+            category = get_object_or_404(Category, pk=category_data)
+            instance.category = category
+
+        if first_name is not None:
+            instance.first_name = first_name
+
+        if last_name is not None:
+            instance.last_name = last_name
+
+        if cpf is not None:
+            instance.cpf = cpf
+
+        instance.save()
+
+        return instance
