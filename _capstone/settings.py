@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 import dotenv
+import django_on_heroku
 
 dotenv.load_dotenv()
 
@@ -109,7 +110,7 @@ if os.getenv("GITHUB_WORKFLOW"):
             "PORT": "5432",
         }
     }
-    SECRET_KEY = "sua secret_key"  # não esqueça de alterar
+    SECRET_KEY = os.getenv("SECRET_KEY")
 else:
     if DEVELOPMENT_MODE is True:
         DATABASES = {
@@ -131,7 +132,7 @@ else:
         }
 
 
-AUTH_USER_MODEL = 'accounts.Account'
+AUTH_USER_MODEL = "accounts.Account"
 
 
 # Password validation
@@ -178,18 +179,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.Account"
 
 REST_FRAMEWORK = {
-    # YOUR SETTINGS
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
-
-REST_FRAMEWORK = {
-    # YOUR SETTINGS
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Capstone API",
-    "DESCRIPTION": "Projeto API Django da Kenzie",
+    "TITLE": "Capstone M5 API",
+    "DESCRIPTION": "Projeto API Django, relativo ao M5-S7-Capstone da Kenzie",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+django_on_heroku.settings(locals())

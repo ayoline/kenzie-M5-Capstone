@@ -1,0 +1,6 @@
+#heroku.yml
+build:
+  docker:
+    web: Dockerfile
+run:
+  web: python manage.py runserver 0.0.0.0:$PORT

@@ -4,7 +4,7 @@ from django.db import models
 class Medic(models.Model):
     crm = models.CharField(max_length=50, unique=True)
 
-    address = models.ForeignKey(
+    address = models.OneToOneField(
         "addresses.Address",
         on_delete=models.CASCADE,
         related_name="medics",
@@ -22,7 +22,7 @@ class Medic(models.Model):
         related_name="medics",
     )
 
-    account = models.ForeignKey(
+    account = models.OneToOneField(
         "accounts.Account",
         on_delete=models.CASCADE,
         related_name="medics",
