@@ -12,13 +12,13 @@ class Schedule(models.Model):
     medic = models.ForeignKey(
         "medics.Medic",
         on_delete=models.CASCADE,
-        related_name="patients",
+        related_name="Schedules",
     )
     
     patient = models.ForeignKey(
         "patients.Patient",
         on_delete=models.CASCADE,
-        related_name="patients",
+        related_name="Schedules",
     )
 
     specialty = models.ForeignKey(
