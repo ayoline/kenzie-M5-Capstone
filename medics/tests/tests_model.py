@@ -17,9 +17,7 @@ class MedicsModelTest(TestCase):
             "category_id": 1,
             "specialty_id": 1,
         }
-        cls.medic = Medic.objects.create(
-            **cls.medic_data,
-        )
+        cls.medic = Medic.objects.create(**cls.medic_data)
         cls.specialty_data = {
             "name": "otorrino",
         }
