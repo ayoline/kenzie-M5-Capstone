@@ -50,7 +50,7 @@ class EmployeeModelTest(TestCase):
         self.assertEqual(expected_max_length, result_max_length)
 
 
-class EmployeeAndAddressRelationshipTest(TestCase):
+class EmployeeRelationshipsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.address_data = {
