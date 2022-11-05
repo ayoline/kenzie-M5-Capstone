@@ -25,7 +25,7 @@ class SpecialtyDetailView(RetrieveUpdateDestroyAPIView):
             raise PermissionDenied("Permission Denied: this specialty is in use by a medic!")
 
         if len(schedule.filter(specialty_id=instance.id, completed=False)):
-            raise PermissionDenied("Permission Denied: this specialty is in use by a active schedule!")
+            raise PermissionDenied("Permission Denied: this specialty is in use by an active schedule!")
 
         if instance.name.__contains__(clinic_general):
             raise PermissionDenied("Permission Denied: specialty 'Clínico Geral' cannot be deleted")
