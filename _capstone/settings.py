@@ -60,6 +60,7 @@ MY_APPS = [
     "patients",
     "employees",
     "medics",
+    "schedules",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
