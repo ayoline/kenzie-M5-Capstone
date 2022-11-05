@@ -91,19 +91,39 @@ class MedicRelationshipsTest(TestCase):
             "description": "Any description"
         }
 
-        cls.chart_data = {
-            "is_pregnant": False,
-            "is_diabetic": False,
-            "is_smoker": False,
-            "is_allergic": False,
-            "heart_disease": False,
-            "dificulty_healing": False,
-            "use_medication": False,
-            "other_information": "test",
-        }
-
         cls.specialty_data = {
             "name": "Clínico geral",
+        }
+
+        cls.address_two_data = {
+            "street": "rua das magueiras",
+            "number": 100,
+            "cep": "12345656",
+            "state": "SP",
+            "district": "bairro lalala",
+            "city": "São Paulo",
+        }
+
+        cls.account_two_data = {
+            "first_name": "fulano",
+            "last_name": "de tal",
+            "phone_number": "12345565565",
+            "username": "hilary",
+            "password": "sdada11231",
+            "is_medic": True,
+        }
+
+        cls.medic_two_data = {
+            "crm": "12312312329",
+        }
+
+        cls.category_two_data = {
+            "color": "green",
+            "description": "Any description"
+        }
+
+        cls.specialty_two_data = {
+            "name": "Pediatra",
         }
 
         cls.account = Account.objects.create_user(**cls.account_data)
@@ -111,7 +131,8 @@ class MedicRelationshipsTest(TestCase):
         cls.specialty = Specialty.objects.create(**cls.specialty_data)
         cls.category = Category.objects.create(**cls.category_data)
         cls.medic = Medic.objects.create(
-            **cls.medic_data, account=cls.account, address=cls.address, specialty=cls.specialty, category=cls.category)
+            **cls.medic_data, account=cls.account, address=cls.address,
+            specialty=cls.specialty, category=cls.category)
 
     def test_if_medic_can_have_an_address(self):
         # Verifica se um medic pode registrar um address relacionado
@@ -132,41 +153,108 @@ class MedicRelationshipsTest(TestCase):
         outro medic """
 
         with self.assertRaises(IntegrityError):
-            account_two_data = {
-                "first_name": "fulano",
-                "last_name": "de tal",
-                "phone_number": "12345565565",
-                "username": "hilary",
-                "password": "sdada11231",
-                "is_medic": True,
-            }
 
-            medic_two_data = {
-                "crm": "12312312329",
-            }
-
-            account = Account.objects.create_user(**account_two_data)
+            account = Account.objects.create_user(**self.account_two_data)
             medic_two = Medic.objects.create(
-                **medic_two_data, account=account, address=self.address, specialty=self.specialty, category=self.category)
+                **self.medic_two_data, account=account, address=self.address, specialty=self.specialty, category=self.category)
 
     def test_if_raise_error_when_medic_already_have_an_account(self):
         """ Verifica se um erro é levantado ao atribuir a mesma account a
         outro medic """
 
         with self.assertRaises(IntegrityError):
-            address_two_data = {
-                "street": "rua das magueiras",
-                "number": 100,
-                "cep": "12345656",
-                "state": "SP",
-                "district": "bairro lalala",
-                "city": "São Paulo",
-            }
 
-            medic_two_data = {
-                "crm": "12312314329",
-            }
-
-            address = Address.objects.create(**address_two_data)
+            address = Address.objects.create(**self.address_two_data)
             medic_two = Medic.objects.create(
-                **medic_two_data, account=self.account, address=address, specialty=self.specialty, category=self.category)
+                **self.medic_two_data, account=self.account, address=address,
+                specialty=self.specialty, category=self.category)
+
+    def test_category_may_contain_multiple_medics(self):
+        # Verifica se uma category pode ter vários medics relacionados
+
+        address_two = Address.objects.create(**self.address_two_data)
+        account_two = Account.objects.create_user(**self.account_two_data)
+        medic_two = Medic.objects.create(
+            **self.medic_two_data,
+            account=account_two,
+            address=address_two,
+            category=self.category,
+            specialty=self.specialty)
+
+        medics = []
+        medics.append(self.medic)
+        medics.append(medic_two)
+
+        for medic in medics:
+            self.assertIs(medic.category, self.category)
+            self.assertEquals(len(medics), self.category.medics.count())
+
+    def test_medic_cannot_belong_to_more_than_one_category(self):
+        # Verifica se um medic pode ter somente uma category relacionada
+
+        address_two = Address.objects.create(**self.address_two_data)
+        category_two = Category.objects.create(**self.category_two_data)
+        account_two = Account.objects.create_user(**self.account_two_data)
+        medic_two = Medic.objects.create(
+            **self.medic_two_data,
+            account=account_two,
+            address=address_two,
+            category=self.category,
+            specialty=self.specialty)
+
+        medics = []
+        medics.append(self.medic)
+        medics.append(medic_two)
+
+        for medic in medics:
+            medic.category = category_two
+            medic.save()
+
+        for medic in medics:
+            self.assertNotIn(medic, self.category.medics.all())
+            self.assertIn(medic, category_two.medics.all())
+
+    def test_specialty_may_contain_multiple_medics(self):
+        # Verifica se uma specialty pode ter vários medics relacionados
+
+        address_two = Address.objects.create(**self.address_two_data)
+        account_two = Account.objects.create_user(**self.account_two_data)
+        medic_two = Medic.objects.create(
+            **self.medic_two_data,
+            account=account_two,
+            address=address_two,
+            category=self.category,
+            specialty=self.specialty)
+
+        medics = []
+        medics.append(self.medic)
+        medics.append(medic_two)
+
+        for medic in medics:
+            self.assertIs(medic.specialty, self.specialty)
+            self.assertEquals(len(medics), self.specialty.medics.count())
+
+    def test_medic_cannot_belong_to_more_than_one_specialty(self):
+        # Verifica se um medic pode ter somente uma specialty relacionada
+
+        address_two = Address.objects.create(**self.address_two_data)
+        specialty_two = Specialty.objects.create(**self.specialty_two_data)
+        account_two = Account.objects.create_user(**self.account_two_data)
+        medic_two = Medic.objects.create(
+            **self.medic_two_data,
+            account=account_two,
+            address=address_two,
+            category=self.category,
+            specialty=self.specialty)
+
+        medics = []
+        medics.append(self.medic)
+        medics.append(medic_two)
+
+        for medic in medics:
+            medic.specialty = specialty_two
+            medic.save()
+
+        for medic in medics:
+            self.assertNotIn(medic, self.specialty.medics.all())
+            self.assertIn(medic, specialty_two.medics.all())
