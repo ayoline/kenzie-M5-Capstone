@@ -2,11 +2,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .models import Specialty
 from medics.models import Medic
 from schedules.models import Schedule
-from django.contrib import messages
 from .serializers import SpecialtySerializer
 from django.core.exceptions import PermissionDenied
-from rest_framework import status
-import ipdb
 
 
 class SpecialtyView(ListCreateAPIView):
