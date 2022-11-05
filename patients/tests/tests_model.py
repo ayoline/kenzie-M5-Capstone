@@ -51,6 +51,26 @@ class PatientsModelTest(TestCase):
         self.assertEqual(self.patient.last_name, self.patient_data["last_name"])
         self.assertEqual(self.patient.cpf, self.patient_data["cpf"])
 
+    def test_patient_and_first_name(self):
+        """
+        Conferir informações entre patient e first_name
+        """
+        expected_first_name = "Adriana"
+        result_first_name = self.patient.first_name
+        msg = f"Verifique se o valor de `first_name` foi definida como {expected_first_name}"
+
+        self.assertEqual(expected_first_name, result_first_name, msg)
+
+    def test_cpf_max_length(self):
+        """
+        Verifica a propriedade de tamanho máximo de `cpf`
+        """
+        expected_max_length = 14
+        result_max_length = Patient._meta.get_field("cpf").max_length
+        msg = f"Verifique se a propriedade `max_length` de name foi definida como {expected_max_length}"
+
+        self.assertEqual(expected_max_length, result_max_length, msg)
+
 
 class PatientRelationshipTest(TestCase):
     @classmethod
@@ -107,13 +127,3 @@ class PatientRelationshipTest(TestCase):
         self.assertIs(self.address.patients, self.patient)
 
         self.assertIs(self.address, self.patient.address)
-
-    def test_cpf_max_length(self):
-        """
-        Verifica a propriedade de tamanho máximo de `cpf`
-        """
-        expected_max_length = 14
-        result_max_length = Patient._meta.get_field("cpf").max_length
-        msg = f"Verifique se a propriedade `max_length` de name foi definida como {expected_max_length}"
-
-        self.assertEqual(expected_max_length, result_max_length, msg)
