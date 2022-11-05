@@ -9,6 +9,15 @@ from django.db import IntegrityError
 class PatientsModelTest(TestCase):
     @classmethod
     def setUpTestData(cls) -> None:
+        cls.patient_data = {
+            "first_name": "Adriana",
+            "last_name": "Silva",
+            "cpf": "13678958236",
+            "address_id": 2,
+            "category_id": 2,
+            "chart_id": 2,
+        }
+        cls.patient = Patient.objects.create(**cls.patient_data)
 
         cls.address_data = {
             "street": "Rua ValVerde",
@@ -53,6 +62,10 @@ class PatientsModelTest(TestCase):
                          self.patient_data["first_name"])
         self.assertEqual(self.patient.last_name,
                          self.patient_data["last_name"])
+
+    def test_patient_fields(self):
+        self.assertEqual(self.patient.first_name, self.patient_data["first_name"])
+        self.assertEqual(self.patient.last_name, self.patient_data["last_name"])
         self.assertEqual(self.patient.cpf, self.patient_data["cpf"])
 
     def test_patient_and_first_name(self):
@@ -108,6 +121,9 @@ class PatientRelationshipTest(TestCase):
             "first_name": "Adriana",
             "last_name": "Silva",
             "cpf": "13678958236",
+            "address_id": 1,
+            "category_id": 1,
+            "chart_id": 1,
         }
 
         cls.chart = Chart.objects.create(**cls.chart_data)

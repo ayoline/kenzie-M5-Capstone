@@ -21,6 +21,3 @@ class PatientChartView(RetrieveAPIView):
     queryset = Chart.objects.all()
     serializer_class = ChartPatientSerializer
     lookup_url_kwarg = 'patient_id'
-
-    
-    
