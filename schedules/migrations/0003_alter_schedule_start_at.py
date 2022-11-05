@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("schedules", "0001_initial"),
+        ("schedules", "0002_alter_schedule_start_at"),
     ]
 
     operations = [
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             model_name="schedule",
             name="start_at",
             field=models.DateTimeField(
-                default=datetime.datetime(2022, 11, 5, 14, 49, 48, 136328)
+                default=datetime.datetime(2022, 11, 5, 14, 49, 58, 768246)
             ),
         ),
     ]
