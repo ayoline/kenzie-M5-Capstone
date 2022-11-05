@@ -43,4 +43,3 @@ class SchedulesPatientCancelView(DestroyAPIView):
     def perform_destroy(self, instance):
         setattr(instance, 'is_active', False)
         instance.save()
-
