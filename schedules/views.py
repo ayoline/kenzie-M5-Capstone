@@ -32,8 +32,8 @@ class SchedulesMedicView(ListAPIView):
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
-        medict_id = self.kwargs["medict_id"]
-        return self.queryset.filter(medict_id=medict_id)
+        medic_id = self.kwargs["medic_id"]
+        return self.queryset.filter(medic_id=medic_id)
 
 
 class SchedulesPatientCancelView(DestroyAPIView):

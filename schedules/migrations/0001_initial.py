@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("patients", "0001_initial"),
+        ("medics", "0002_alter_medic_account_alter_medic_address"),
         ("specialties", "0001_initial"),
-        ("medics", "0001_initial"),
+        ("patients", "0002_alter_patient_address_alter_patient_chart"),
     ]
 
     operations = [
