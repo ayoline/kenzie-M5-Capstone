@@ -193,3 +193,172 @@ class PatientRelationshipTest(TestCase):
                 address=address_two,
                 category=self.category,
             )
+
+    def test_category_may_contain_multiple_patients(self):
+        # Verifica se uma category pode ter vários pacientes relacionados
+        patient_three_data = {
+            "first_name": "Mari",
+            "last_name": "Silva",
+            "cpf": "13678958244",
+        }
+        patient_four_data = {
+            "first_name": "Mari",
+            "last_name": "Silva",
+            "cpf": "13678958243",
+        }
+
+        address_three_data = {
+            "street": "rua das margaridas",
+            "number": 60,
+            "cep": "12345652",
+            "state": "SP",
+            "district": "bairro lalala",
+            "city": "São Paulo",
+        }
+
+        address_four_data = {
+            "street": "rua das margaridas",
+            "number": 50,
+            "cep": "12345616",
+            "state": "RJ",
+            "district": "bairro lalala",
+            "city": "São Paulo",
+        }
+
+        chart_three_data = {
+            "is_pregnant": False,
+            "is_diabetic": False,
+            "is_smoker": True,
+            "is_allergic": True,
+            "heart_disease": False,
+            "dificulty_healing": False,
+            "use_medication": True,
+            "other_information": "Se encontra bem nervoso",
+        }
+
+        chart_four_data = {
+            "is_pregnant": False,
+            "is_diabetic": False,
+            "is_smoker": True,
+            "is_allergic": False,
+            "heart_disease": False,
+            "dificulty_healing": False,
+            "use_medication": True,
+            "other_information": "Se encontra bem nervoso",
+        }
+
+        chart_three = Chart.objects.create(**chart_three_data)
+        chart_four = Chart.objects.create(**chart_four_data)
+        address_three = Address.objects.create(**address_three_data)
+        address_four = Address.objects.create(**address_four_data)
+        patient_three = Patient.objects.create(
+            **patient_three_data,
+            chart=chart_three,
+            address=address_three,
+            category=self.category,
+        )
+
+        patient_four = Patient.objects.create(
+            **patient_four_data,
+            chart=chart_four,
+            address=address_four,
+            category=self.category,
+        )
+
+        patients = []
+        patients.append(self.patient)
+        patients.append(patient_three)
+        patients.append(patient_four)
+
+        for patient in patients:
+            self.assertIs(patient.category, self.category)
+            self.assertEquals(len(patients), self.category.patients.count())
+
+    def test__patient_cannot_belong_to_more_than_one_category(self):
+        # Verifica se um paciente pode ter somente uma categoria relacionada
+        patient_three_data = {
+            "first_name": "Mari",
+            "last_name": "Silva",
+            "cpf": "13678958284",
+        }
+        patient_four_data = {
+            "first_name": "Mari",
+            "last_name": "Silva",
+            "cpf": "13628958243",
+        }
+
+        address_three_data = {
+            "street": "rua das margaridas",
+            "number": 10,
+            "cep": "12345602",
+            "state": "SP",
+            "district": "bairro lalala",
+            "city": "São Paulo",
+        }
+
+        address_four_data = {
+            "street": "rua das margaridas",
+            "number": 70,
+            "cep": "12325616",
+            "state": "RJ",
+            "district": "bairro lalala",
+            "city": "São Paulo",
+        }
+
+        chart_three_data = {
+            "is_pregnant": False,
+            "is_diabetic": False,
+            "is_smoker": True,
+            "is_allergic": True,
+            "heart_disease": False,
+            "dificulty_healing": False,
+            "use_medication": True,
+            "other_information": "Se encontra bem nervoso",
+        }
+
+        chart_four_data = {
+            "is_pregnant": False,
+            "is_diabetic": False,
+            "is_smoker": True,
+            "is_allergic": False,
+            "heart_disease": False,
+            "dificulty_healing": False,
+            "use_medication": True,
+            "other_information": "Se encontra bem nervoso",
+        }
+
+        category_three_data = {
+            "color": "blue",
+            "description": "atende pela tarde",
+        }
+
+        category_three = Category.objects.create(**category_three_data)
+        chart_three = Chart.objects.create(**chart_three_data)
+        chart_four = Chart.objects.create(**chart_four_data)
+        address_three = Address.objects.create(**address_three_data)
+        address_four = Address.objects.create(**address_four_data)
+
+        patient_three = Patient.objects.create(
+            **patient_three_data,
+            chart=chart_three,
+            address=address_three,
+            category=self.category,
+        )
+
+        patient_four = Patient.objects.create(
+            **patient_four_data,
+            chart=chart_four,
+            address=address_four,
+            category=self.category,
+        )
+        patients = []
+        patients.append(patient_three)
+        patients.append(patient_four)
+
+        for patient in patients:
+            patient.category = category_three
+            patient.save()
+
+        for patient in patients:
+            self.assertNotIn(patient, self.category.patients.all())
+            self.assertIn(patient, category_three.patients.all())
