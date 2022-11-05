@@ -8,7 +8,6 @@ class SpecialtyView(ListCreateAPIView):
     queryset = Specialty.objects.all()
 
 
-# specialty_id
 class SpecialtyDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = SpecialtySerializer
     queryset = Specialty.objects.all()
