@@ -3,7 +3,7 @@ from .models import Specialty
 from medics.models import Medic
 from schedules.models import Schedule
 from .serializers import SpecialtySerializer
-from django.core.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied
 
 
 class SpecialtyView(ListCreateAPIView):
@@ -22,12 +22,12 @@ class SpecialtyDetailView(RetrieveUpdateDestroyAPIView):
         clinic_general = "Clínico Geral"
 
         if len(medics.filter(specialty__id=instance.id)):
-            raise PermissionDenied
+            raise PermissionDenied("Permission Denied: this specialty is in use by a medic!")
 
         if len(schedule.filter(specialty_id=instance.id, completed=False)):
-            raise PermissionDenied
+            raise PermissionDenied("Permission Denied: this specialty is in use by a active schedule!")
 
         if instance.name.__contains__(clinic_general):
-            raise PermissionDenied
+            raise PermissionDenied("Permission Denied: specialty 'Clínico Geral' cannot be deleted")
 
         instance.delete()
