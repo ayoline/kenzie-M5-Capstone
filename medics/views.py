@@ -1,7 +1,7 @@
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from .models import Medic
-from django.core.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied
 from schedules.models import Schedule
 from .serializers import MedicSerializer
 
@@ -19,6 +19,6 @@ class MedicDetailsView(RetrieveUpdateDestroyAPIView):
         schedule = Schedule.objects.all()
 
         if len(schedule.filter(medic_id=instance.id, completed=False)):
-            raise PermissionDenied
+            raise PermissionDenied("Permission Denied: this medic has active schedules")
 
         instance.delete()
