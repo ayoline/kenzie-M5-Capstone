@@ -2,9 +2,15 @@ from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.generics import ListCreateAPIView, DestroyAPIView
 from .models import Schedule
 from .serializers import ScheduleSerializer, SchedulePatchSerializer
+from rest_framework.authentication import TokenAuthentication
+from .permissions import IsOwnerOrIsAuthOnCreate, IsOwnerOrIsAuthOnPatch
+from rest_framework.permissions import IsAdminUser
 
 
 class SchedulesPatientView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrIsAuthOnCreate]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
@@ -18,6 +24,9 @@ class SchedulesPatientView(ListCreateAPIView):
 
 
 class SchedulesDetailsPatientView(RetrieveUpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrIsAuthOnPatch]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
@@ -28,6 +37,9 @@ class SchedulesDetailsPatientView(RetrieveUpdateAPIView):
 
 
 class SchedulesMedicView(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrIsAuthOnCreate]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
@@ -37,6 +49,9 @@ class SchedulesMedicView(ListAPIView):
 
 
 class SchedulesPatientCancelView(DestroyAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminUser]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 

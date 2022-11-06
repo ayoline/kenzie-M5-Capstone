@@ -4,7 +4,7 @@ from .views import SchedulesPatientView, SchedulesDetailsPatientView
 
 urlpatterns = [
     path(
-        "patient/<patient_id>/schedule/<pk>/", 
+        "patient/<patient_id>/schedule/<pk>/",
         SchedulesDetailsPatientView.as_view()
     ),
     path("patient/<patient_id>/schedule/", SchedulesPatientView.as_view()),
