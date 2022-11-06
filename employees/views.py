@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .permissions import IsOwnerOrIsAdmin
 
 
-class EmployeeDetailListView(generics.ListAPIView):
+class EmployeeListView(generics.ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -14,7 +14,7 @@ class EmployeeDetailListView(generics.ListAPIView):
     serializer_class = EmployeeSerializer
 
 
-class EmployeeView(generics.CreateAPIView):
+class EmployeeCreateView(generics.CreateAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
 
@@ -22,27 +22,9 @@ class EmployeeView(generics.CreateAPIView):
     serializer_class = EmployeeSerializer
 
 
-class EmployeeDetailView(generics.RetrieveAPIView):
+class EmployeeDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsOwnerOrIsAdmin]
-
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-    lookup_url_kwarg = "employee_id"
-
-
-class EmployeeDetailView(generics.UpdateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
-
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-    lookup_url_kwarg = "employee_id"
-
-
-class EmployeeDetailView(generics.DestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
 
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
