@@ -43,12 +43,19 @@ class PatientsModelTest(TestCase):
             "last_name": "Silva",
             "cpf": "13678958236",
         }
+
         cls.patient = Patient.objects.create(
             **cls.patient_data,
             chart=cls.chart,
             address=cls.address,
             category=cls.category,
         )
+
+    def test_patient_fields(self):
+        self.assertEqual(self.patient.first_name,
+                         self.patient_data["first_name"])
+        self.assertEqual(self.patient.last_name,
+                         self.patient_data["last_name"])
 
     def test_patient_fields(self):
         self.assertEqual(self.patient.first_name, self.patient_data["first_name"])
@@ -143,6 +150,7 @@ class PatientRelationshipTest(TestCase):
         """Verifica se um erro é levantado ao atribuir o mesmo address a
         outro patient"""
 
+
         with self.assertRaises(IntegrityError):
             chart_two_data = {
                 "is_pregnant": False,
@@ -162,6 +170,7 @@ class PatientRelationshipTest(TestCase):
             }
 
             chart_two = Chart.objects.create(**chart_two_data)
+
             patient_two = Patient.objects.create(
                 **patient_two_data,
                 chart=chart_two,
@@ -197,6 +206,7 @@ class PatientRelationshipTest(TestCase):
                 address=address_two,
                 category=self.category,
             )
+
 
     # def test_category_may_contain_multiple_patients(self):
     #     # Verifica se uma category pode ter vários pacientes relacionados
