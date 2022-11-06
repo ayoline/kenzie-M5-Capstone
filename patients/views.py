@@ -18,19 +18,19 @@ class PatientView(ListCreateAPIView):
     serializer_class = PatientSerializer
 
 
-class PatientDetailsView(RetrieveUpdateDestroyAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminOrAuth]
-
-    queryset = Patient.objects.all()
-    serializer_class = PatientSerializer
-    lookup_url_kwarg = "patient_id"
-
-
 class PatientChartView(RetrieveAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     queryset = Chart.objects.all()
     serializer_class = ChartPatientSerializer
+    lookup_url_kwarg = "patient_id"
+
+
+class PatientDetailsView(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminOrAuth]
+
+    queryset = Patient.objects.all()
+    serializer_class = PatientSerializer
     lookup_url_kwarg = "patient_id"
