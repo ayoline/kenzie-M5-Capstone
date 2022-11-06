@@ -1,11 +1,16 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.generics import ListCreateAPIView, DestroyAPIView
-from rest_framework.generics import UpdateAPIView
 from .models import Schedule
 from .serializers import ScheduleSerializer, SchedulePatchSerializer
+from rest_framework.authentication import TokenAuthentication
+from .permissions import IsOwnerOrIsAuthOnCreate, IsOwnerOrIsAuthOnPatch
+from rest_framework.permissions import IsAdminUser
 
 
 class SchedulesPatientView(ListCreateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrIsAuthOnCreate]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
@@ -18,30 +23,38 @@ class SchedulesPatientView(ListCreateAPIView):
         serializer.save(patient_id=patient_id)
 
 
-class SchedulesRetrievePatientView(RetrieveAPIView):
+class SchedulesDetailsPatientView(RetrieveUpdateAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrIsAuthOnPatch]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
-
-class SchedulesUpdatePatientView(UpdateAPIView):
-    queryset = Schedule.objects.all()
-    serializer_class = SchedulePatchSerializer
+    serializer_map = {
+        'GET': ScheduleSerializer,
+        'PATCH': SchedulePatchSerializer,
+    }
 
 
 class SchedulesMedicView(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwnerOrIsAuthOnCreate]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
     def get_queryset(self):
-        medict_id = self.kwargs["medict_id"]
-        return self.queryset.filter(medict_id=medict_id)
+        medic_id = self.kwargs["medic_id"]
+        return self.queryset.filter(medic_id=medic_id)
 
 
 class SchedulesPatientCancelView(DestroyAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAdminUser]
+
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
 
     def perform_destroy(self, instance):
         setattr(instance, 'is_active', False)
         instance.save()
-
