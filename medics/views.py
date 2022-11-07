@@ -2,7 +2,7 @@ from rest_framework import generics
 from .models import Medic
 from rest_framework.exceptions import PermissionDenied
 from schedules.models import Schedule
-from .serializers import MedicSerializer
+from .serializers import MedicSerializer, MedicListSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser
 from .permissions import IsOwnerOrIsAdmin
@@ -10,7 +10,7 @@ from .permissions import IsOwnerOrIsAdmin
 
 class MedicListView(generics.ListAPIView):
     queryset = Medic.objects.all()
-    serializer_class = MedicSerializer
+    serializer_class = MedicListSerializer
 
 
 class MedicCreateView(generics.CreateAPIView):
