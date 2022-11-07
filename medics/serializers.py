@@ -56,12 +56,12 @@ class MedicSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         body = {**validated_data}
-       
+
         account_data = body.pop("account")
 
         crm = body.pop("crm")
 
-        address_data = body.pop("address") 
+        address_data = body.pop("address")
 
         category_data = body.pop("category_id")
 
@@ -71,17 +71,14 @@ class MedicSerializer(serializers.ModelSerializer):
 
         specialty = get_object_or_404(Specialty, pk=specialty_data)
 
-        account = Account.objects.create_user(
-            **account_data, 
-            is_medic=True
-        )
+        account = Account.objects.create_user(**account_data, is_medic=True)
 
         address = Address.objects.create(**address_data)
 
         medic_data = {"crm": crm}
 
         medic = Medic.objects.create(
-            **medic_data, 
+            **medic_data,
             account=account,
             category=category,
             specialty=specialty,
@@ -128,3 +125,24 @@ class MedicSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class MedicListSerializer(serializers.ModelSerializer):
+    category_id = serializers.IntegerField(read_only=True)
+    specialty_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Medic
+        fields = [
+            "id",
+            "crm",
+            "category_id",
+            "specialty_id",
+        ]
+
+        read_only_fields = [
+            "id",
+            "crm",
+            "category_id",
+            "specialty_id",
+        ]

@@ -1,6 +1,6 @@
 from rest_framework import generics
 from .models import Employee
-from .serializers import EmployeeSerializer
+from .serializers import EmployeeSerializer, EmployeeListSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .permissions import IsOwnerOrIsAdmin
@@ -11,7 +11,7 @@ class EmployeeListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
+    serializer_class = EmployeeListSerializer
 
 
 class EmployeeCreateView(generics.CreateAPIView):
