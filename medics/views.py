@@ -5,20 +5,19 @@ from schedules.models import Schedule
 from .serializers import MedicSerializer, MedicListSerializer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAdminUser
-from .permissions import IsOwnerOrIsAdmin
+from .permissions import IsOwnerOrIsAdmin, GetorIsAdmin
+from utils.mixins import SerializerByMethodMixin
 
 
-class MedicListView(generics.ListAPIView):
-    queryset = Medic.objects.all()
-    serializer_class = MedicListSerializer
-
-
-class MedicCreateView(generics.CreateAPIView):
+class MedicView(SerializerByMethodMixin, generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [GetorIsAdmin]
 
     queryset = Medic.objects.all()
-    serializer_class = MedicSerializer
+    serializer_map = {
+        "GET": MedicListSerializer,
+        "POST": MedicSerializer,
+    }
 
 
 class MedicDetailsView(generics.RetrieveUpdateDestroyAPIView):
