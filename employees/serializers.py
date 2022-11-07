@@ -26,7 +26,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
         address_data = validated_data.pop("address")
         address = Address.objects.create(**address_data)
         employee = Employee.objects.create(
-            **validated_data, account=account, address=address)
+            **validated_data, account=account, address=address
+        )
         return employee
 
     def update(self, instance, validated_data):
@@ -55,3 +56,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class EmployeeListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = [
+            "id",
+            "cpf",
+        ]
