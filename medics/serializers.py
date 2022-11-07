@@ -8,6 +8,8 @@ from categories.models import Category
 from specialties.models import Specialty
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
+from django.http import Http404
+from rest_framework.exceptions import NotFound
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -67,9 +69,15 @@ class MedicSerializer(serializers.ModelSerializer):
 
         specialty_data = body.pop("specialty_id")
 
-        category = get_object_or_404(Category, pk=category_data)
+        try:
+            category = get_object_or_404(Category, pk=category_data)
+        except Http404:
+            raise NotFound("Category not found!")
 
-        specialty = get_object_or_404(Specialty, pk=specialty_data)
+        try:
+            specialty = get_object_or_404(Specialty, pk=specialty_data)
+        except Http404:
+            raise NotFound("Specialty not found!")
 
         account = Account.objects.create_user(**account_data, is_medic=True)
 
