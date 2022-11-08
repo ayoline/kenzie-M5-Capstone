@@ -1,10 +1,11 @@
 from datetime import datetime  
 from django.db import models
+from django.utils import timezone
 
 
 class Schedule(models.Model):
     description = models.TextField()
-    start_at = models.DateTimeField(default=datetime.now())
+    start_at = models.DateTimeField(default=timezone.now())
     completed = models.BooleanField(default=False)
     step = models.IntegerField(default=1)
     is_active = models.BooleanField(default=True)
