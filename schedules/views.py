@@ -40,9 +40,9 @@ class SchedulesDetailsPatientView(SerializerByMethodMixin, RetrieveUpdateAPIView
     }
 
 
-class SchedulesMedicView(RetrieveAPIView):
+class SchedulesMedicView(ListAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsMedicOwnerOrIsAdmin]
+    permission_classes = [IsOwnerOrIsAuthOnCreate]
     lookup_url_kwarg = "medic_id"
 
     queryset = Schedule.objects.all()
