@@ -1,4 +1,4 @@
-from datetime import datetime  
+from datetime import datetime
 from django.db import models
 from django.utils import timezone
 
@@ -15,7 +15,7 @@ class Schedule(models.Model):
         on_delete=models.CASCADE,
         related_name="schedules",
     )
-    
+
     patient = models.ForeignKey(
         "patients.Patient",
         on_delete=models.CASCADE,
