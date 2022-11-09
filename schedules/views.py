@@ -55,7 +55,7 @@ class SchedulesMedicView(RetrieveAPIView):
 
 class SchedulesPatientCancelView(DestroyAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOwnerOrIsAuthOnPatch]
 
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
