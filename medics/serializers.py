@@ -105,7 +105,7 @@ class MedicSerializer(serializers.ModelSerializer):
 
         category_data = body.pop("category_id", None)
 
-        specilty_data = body.pop("specilty", None)
+        specialty_data = body.pop("specialty_id", None)
 
         if account_data is not None:
             for key, value in account_data.items():
@@ -123,9 +123,9 @@ class MedicSerializer(serializers.ModelSerializer):
             category = get_object_or_404(Category, pk=category_data)
             instance.category = category
 
-        if specilty_data is not None:
-            specilty = get_object_or_404(Specialty, pk=specilty_data)
-            instance.specilty = specilty
+        if specialty_data is not None:
+            specialty = get_object_or_404(Specialty, pk=specialty_data)
+            instance.specialty = specialty
 
         if crm is not None:
             instance.crm = crm
