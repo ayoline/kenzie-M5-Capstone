@@ -10,7 +10,7 @@ from .exceptions import (
     ConsultaEtapa1Error,
     MedicoPacienteCategoriasDiferentesError,
     ConsultaEtapa2Error,
-    MedicoErradoError
+    MedicoErradoError,
 )
 from django.shortcuts import get_object_or_404
 
@@ -26,9 +26,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     def validate_step(self, value):
         if not isinstance(value, int):
-            raise serializers.ValidationError(
-                "step tem que ser um núemro inteiro."
-            )
+            raise serializers.ValidationError("step tem que ser um núemro inteiro.")
         if value < 1 or value > 2:
             raise serializers.ValidationError(
                 "stepe tem que ser um número inteiro de 1 a 2"
@@ -49,7 +47,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
             "medic_id",
             "patient_id",
             "specialty_id",
-            "is_active"
+            "is_active",
         ]
         read_only_fields = ["id", "completed", "is_active"]
 
@@ -104,13 +102,9 @@ class SchedulePatchSerializer(serializers.ModelSerializer):
             "medic_id",
             "patient_id",
             "specialty_id",
-            "is_active"
+            "is_active",
         ]
-        read_only_fields = [
-            "id",
-            "step",
-            "is_active"
-        ]
+        read_only_fields = ["id", "step", "is_active"]
 
     def update(self, instance, validated_data):
 
