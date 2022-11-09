@@ -13,6 +13,8 @@ from .exceptions import (
     MedicoErradoError,
 )
 from django.shortcuts import get_object_or_404
+from django.http import Http404
+from rest_framework.exceptions import NotFound
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -58,9 +60,20 @@ class ScheduleSerializer(serializers.ModelSerializer):
         patient_id = body.get("patient_id")
         specialty_id = body.get("specialty_id")
 
-        medic = get_object_or_404(Medic, pk=medic_id)
-        patient = get_object_or_404(Patient, pk=patient_id)
-        specialty = get_object_or_404(Specialty, pk=specialty_id)
+        try:
+            medic = get_object_or_404(Medic, pk=medic_id)
+        except Http404:
+            raise NotFound('Medic not found!')
+
+        try:
+            patient = get_object_or_404(Patient, pk=patient_id)
+        except Http404:
+            raise NotFound('Patient not found!')
+
+        try:
+            specialty = get_object_or_404(Specialty, pk=specialty_id)
+        except Http404:
+            raise NotFound('Specialty not found!')
 
         if step == 1:
             if medic.category.color != patient.category.color:
