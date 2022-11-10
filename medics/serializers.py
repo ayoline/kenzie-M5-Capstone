@@ -8,6 +8,8 @@ from categories.models import Category
 from specialties.models import Specialty
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
+from django.http import Http404
+from rest_framework.exceptions import NotFound
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -56,32 +58,35 @@ class MedicSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         body = {**validated_data}
-       
+
         account_data = body.pop("account")
 
         crm = body.pop("crm")
 
-        address_data = body.pop("address") 
+        address_data = body.pop("address")
 
         category_data = body.pop("category_id")
 
         specialty_data = body.pop("specialty_id")
 
-        category = get_object_or_404(Category, pk=category_data)
+        try:
+            category = get_object_or_404(Category, pk=category_data)
+        except Http404:
+            raise NotFound("Category not found!")
 
-        specialty = get_object_or_404(Specialty, pk=specialty_data)
+        try:
+            specialty = get_object_or_404(Specialty, pk=specialty_data)
+        except Http404:
+            raise NotFound("Specialty not found!")
 
-        account = Account.objects.create_user(
-            **account_data, 
-            is_medic=True
-        )
+        account = Account.objects.create_user(**account_data, is_medic=True)
 
         address = Address.objects.create(**address_data)
 
         medic_data = {"crm": crm}
 
         medic = Medic.objects.create(
-            **medic_data, 
+            **medic_data,
             account=account,
             category=category,
             specialty=specialty,
@@ -100,7 +105,7 @@ class MedicSerializer(serializers.ModelSerializer):
 
         category_data = body.pop("category_id", None)
 
-        specilty_data = body.pop("specilty", None)
+        specialty_data = body.pop("specialty_id", None)
 
         if account_data is not None:
             for key, value in account_data.items():
@@ -118,9 +123,9 @@ class MedicSerializer(serializers.ModelSerializer):
             category = get_object_or_404(Category, pk=category_data)
             instance.category = category
 
-        if specilty_data is not None:
-            specilty = get_object_or_404(Specialty, pk=specilty_data)
-            instance.specilty = specilty
+        if specialty_data is not None:
+            specialty = get_object_or_404(Specialty, pk=specialty_data)
+            instance.specialty = specialty
 
         if crm is not None:
             instance.crm = crm
@@ -128,3 +133,24 @@ class MedicSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class MedicListSerializer(serializers.ModelSerializer):
+    category_id = serializers.IntegerField(read_only=True)
+    specialty_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Medic
+        fields = [
+            "id",
+            "crm",
+            "category_id",
+            "specialty_id",
+        ]
+
+        read_only_fields = [
+            "id",
+            "crm",
+            "category_id",
+            "specialty_id",
+        ]

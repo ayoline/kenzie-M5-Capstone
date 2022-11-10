@@ -1,25 +1,20 @@
 from rest_framework import generics
 from .models import Employee
-from .serializers import EmployeeSerializer
+from .serializers import EmployeeSerializer, EmployeeListSerializer
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from .permissions import IsOwnerOrIsAdmin
+from .permissions import IsOwnerOrIsAdmin, IsAuthOrIsAdmin
+from utils.mixins import SerializerByMethodMixin
 
 
-class EmployeeListView(generics.ListAPIView):
+class EmployeeView(SerializerByMethodMixin, generics.ListCreateAPIView):
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthOrIsAdmin]
 
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
-
-
-class EmployeeCreateView(generics.CreateAPIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAdminUser]
-
-    queryset = Employee.objects.all()
-    serializer_class = EmployeeSerializer
+    serializer_map = {
+        "GET": EmployeeListSerializer,
+        "POST": EmployeeSerializer,
+    }
 
 
 class EmployeeDetailView(generics.RetrieveUpdateDestroyAPIView):
